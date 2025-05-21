@@ -34,7 +34,7 @@ This document outlines the steps to configure and deploy Python Azure functions 
 2. cd to the repo directory
 
     ```
-    cd <datastream-sdk>
+    cd datastream-sdk
     ```
 
 3. Create a branch and make changes in the branch
@@ -67,7 +67,7 @@ Create **Resource group** (say, `myResourceGroup`) if it doesn't exists
 ### Create Storage account 
 <p align="left"><a href="#top">Back to Top</a></p>
 
-Create **Storage account** (say, `myStorageAccount`) in the created resource group
+Create **Storage account** (say, `datastreamsdkaccount`) in the created resource group for metadata container.
 
 1.  From the [Azure portal](https://portal.azure.com/) menu or the **Home** page, select **Storage accounts** to display a list of your storage accounts.
 2. On the **Storage accounts** page, select **Create**.
@@ -95,7 +95,7 @@ Create **Storage account** (say, `myStorageAccount`) in the created resource gro
     <tr align="left" valign="top">
         <td> Instance details </td>
         <td> Storage account name </td>
-        <td> Choose a unique name for your storage account. <br> Storage account names must be between 3 and 24 characters in length and may contain numbers and lowercase letters only. </td>
+        <td> Choose a unique name for your storage account (e.g. <code>datastreamsdkaccount</code>). <br> Storage account names must be between 3 and 24 characters in length and may contain numbers and lowercase letters only. </td>
     </tr>
     <tr align="left" valign="top">
         <td> Instance details </td>
@@ -122,7 +122,7 @@ Create **Container** (say, `metadata`) in the created Storage account.
 
 1. From the [Azure portal](https://portal.azure.com/) menu or the **Home** page, Navigate to your new storage account in the Azure portal.
 2. In the left menu for the storage account, scroll to the Data storage section, then select Containers.
-3. Select the + Container button.
+3. Select the **Add container** button.
 4. Type a name for your new container. Example: `metadata`
     - The container name must be lowercase, must start with a letter or number, and can include only letters, numbers, and the dash (-) character. 
     - For more information about container and blob names, see [Naming and referencing containers, blobs, and metadata](https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata).
@@ -140,11 +140,12 @@ Create **Container** (say, `metadata`) in the created Storage account.
 ### Create Function app
 <p align="left"><a href="#top">Back to Top</a></p>
 
-Create **Function app** (say, `myfunctionApp`) in the created Resource group and Storage account using the following steps, 
+Create **Function App** (e.g., `datastreamSdkFunctionApp`) in the created Resource group and Storage account using the following steps, 
 
 1. From the [Azure portal](https://portal.azure.com/) menu or the **Home** page, select **Create a resource**.
 2. In the New page, select **Compute > Function** App.
-3. Create the **function app** using the **settings** as specified in the following table
+3. Select **Consumption** hosting plan.
+4. Create the **function app** using the **settings** as specified in the following table
 
     <table>
     <thead>
@@ -162,21 +163,16 @@ Create **Function app** (say, `myfunctionApp`) in the created Resource group and
     </tr>
     <tr align="left" valign="top">
         <th> Resource Group </th>
-        <td> <code>myResourceGroup</code> </td>
+        <td> Your resource group </td>
         <td>
             Resource group that is created in earlier steps
         </td>
     </tr>
     <tr align="left" valign="top">
         <th> Function App name </th>
-        <td> Globally unique name </td>
+        <td> <code>datastreamSdkFunctionApp</code> </td>
         <td> Name that identifies your new function app. Valid charactersare a-z (case insensitive), 0-9, and -.</td>
         </tr>
-    <tr align="left" valign="top">
-        <th> Publish </th>
-        <td> <i> Code </i> </td>
-        <td> Option to publish code files or a Docker container.</td>
-    </tr>
     <tr align="left" valign="top">
         <th> Runtime stack </th>
         <td> <i>Python</i> </td>
@@ -184,8 +180,8 @@ Create **Function app** (say, `myfunctionApp`) in the created Resource group and
     </tr>
     <tr align="left" valign="top">
         <th> Version </th>
-        <td> <i>3.8</i></td>
-        <td> Version of the installed runtime. choose 3.8 or above.</td>
+        <td> <i>3.12</i></td>
+        <td> Version of the installed runtime. choose 3.12 or above.</td>
     </tr>
     <tr align="left" valign="top">
         <th> Region </th>
@@ -194,7 +190,7 @@ Create **Function app** (say, `myfunctionApp`) in the created Resource group and
     </tr>
     <tr align="left" valign="top">
         <th> Storage account </th>
-        <td> <code> myStorageAccount </code> </td>
+        <td> <code> datastreamsdkaccount </code> </td>
         <td> storage account to be used by your function app. </td>
     </tr>
     <tr align="left" valign="top">
@@ -203,10 +199,10 @@ Create **Function app** (say, `myfunctionApp`) in the created Resource group and
         <td></td>
     </tr>
     <tr align="left" valign="top">
-        <th>Plan</th>
-        <td>Consumption (Serverless)</td>
-        <td> In this serverless hosting, you pay only for the time your functions run. </td>
-    </tr> 
+        <th> Enable public access </th>
+        <td> Off</td>
+        <td></td>
+    </tr>
     </tbody>
     </table>                                                
 
@@ -220,7 +216,7 @@ Create **cosmos DB account**
 
 1. From the Azure portal menu or the Home page, select Create a resource.
 2. On the New page, search for and select Azure Cosmos DB.
-3. On the Select API option page, select the Create option within the **Core (SQL) - Recommended** section.
+3. On the Select API option page, select the Create option within the **Azure Cosmos DB for NoSQL** section.
 4. In the Create Azure Cosmos DB Account page, enter the following basic settings for the new Azure Cosmos account. Rest settings can be configured based on your requirements.
 
     <table>
@@ -237,11 +233,11 @@ Create **cosmos DB account**
     </tr>
     <tr align="left" valign="top">
         <th>Resource Group </th>
-        <td>Select the resource group created in the first step. <br>Say, <code>myResourceGroup </code></td>
+        <td>Select the resource group created in the first step.</td>
     </tr>
     <tr align="left" valign="top">
         <th>Account Name </th>
-        <td>Enter a unique name to identify your Azure Cosmos account. <br> The name can only contain lowercase letters, numbers, and the hyphen (-) character. It must be between 3-44 characters in length. <br> Say, <code>myCosmosAccount </code></td>
+        <td>Enter a unique name to identify your Azure Cosmos account. <br> The name can only contain lowercase letters, numbers, and the hyphen (-) character. It must be between 3-44 characters in length. <br> Say, <code>datastreamsdk-cosmos-account</code></td>
     </tr>
     <tr align="left" valign="top">
         <th>Location </th>
@@ -257,10 +253,10 @@ Create **cosmos DB account**
 5. Select **Review + create**.
 6. Review the account settings, and then select Create. It takes a few minutes to create the account. Wait for the portal page to display Your deployment is complete.
 
-### Create an SQL database and container
+### Create an SQL database and containers
 <p align="left"><a href="#top">Back to Top</a></p>
 
-Create an **SQL database** under an Azure Cosmos DB account. Say,  `databaseName`. And Create an **SQL container** under an Azure Cosmos DB SQL database. Say, `cosmosContainerName`.
+Create an **SQL database** under an Azure Cosmos DB account. Say,  `datastreamSdkDb`. And Create an **SQL container** under an Azure Cosmos DB SQL database. Say, `cosmosContainerName`.
 
 1. Select Data Explorer from the left navigation on your Azure Cosmos DB account page, and then select **New Container**.
 
@@ -276,54 +272,53 @@ Create an **SQL database** under an Azure Cosmos DB account. Say,  `databaseName
     <tbody>
     <tr align="left" valign="top">
         <th>Database id </th>
-        <td>Select <b>Create new</b> and Enter a unique name. <br> say, <code>databaseName</code></td>
+        <td><code>datastreamSdkDb</code></td>
     </tr>
     <tr align="left" valign="top">
         <th>Container id </th>
-        <td>Enter a unique name for the new container. <br> say, <code>cosmosFirstContainerName</code></td>
+        <td><code>mainContainer</code></td>
     </tr>
     <tr align="left" valign="top">
         <th>Partition key </th>
-        <td>can be left as it is as <code>/id</code> </td>
-    </tr>
-     <tr align="left" valign="top">
-        <th>Container id </th>
-        <td>Enter a unique name for the new container. This container will store tha data that will be used for calculation of unique visitor <br> say, <code>cosmosSecondContainerName</code></td>
-    </tr>
-    <tr align="left" valign="top">
-        <th>Partition key </th>
-        <td> <code>/partition_key</code> </td>
+        <td><code>/id</code> </td>
     </tr>
     </tbody>
     </table>
 
 3. Select OK. The Data Explorer displays the new database and the container that you created.
 
+4. Add a second container for the database. Select the database you created in the previous step, and then select **New Container**.
+
+    <table>
+    <thead>
+    <tr align="left" valign="top">
+        <th>Setting</th>	
+        <th>Suggested value</th>
+    </tr>
+    </thead>
+    <tbody>
+     <tr align="left" valign="top">
+        <th>Container id </th>
+        <td><code>uniqueVisitorContainer</code></td>
+    </tr>
+    <tr align="left" valign="top">
+        <th>Partition key </th>
+        <td><code>/partition_key</code></td>
+    </tr>
+    </tbody>
+    </table>
+
+5. Select OK. The Data Explorer displays the database and the container that you created.
 
 ## Update Function App configuration settings
 <p align="left"><a href="#top">Back to Top</a></p>
 
 Bind Storage account and cosmos db account in the created Azure function
 
-1. Copy the details, 
-    - Navigate to Storage account containing the configs
-        - Go to **Security + Networking > Access Keys**
-        - Toggle **Show Keys** and Copy **Connection string**.  Say, `configStorageConnectionString`
-        - In **Data storage > Containers**, Copy the name of the container that contains the config files. Say, `configStorageContainer`
-
-    - Navigate to Storage account that receives the input data.
-        - Go to **Security + Networking > Access Keys**
-        - Toggle **Show Keys** and Copy **Connection string**. Say,  `dataStorageConnectionString` 
-        - In **Data storage > Containers**, Copy the name of the container that receives data under the Storage Account. Say, `dataStorageContainer`
-
-    - Navigate to cosmos DB account
-            - Go to **Settings > Keys**, select keys
-            - Copy **Primary Connection String**. Say,  `cosmosDBConnectionString`
-
-2. Paste the details,
+1. Populate connection details for the function app:
     - Navigate to the created **Function App**
-    - Go to **Settings > Configuration**
-    - Under **Application Settings**, add/edit the following variable **Names**. i.e, Paste the string copied in the above steps to the respective variable names
+    - Go to **Settings > Environment variables**
+    - Under **App settings**, add/edit the following variable **Names**
 
         <table>
         <thead>
@@ -336,42 +331,42 @@ Bind Storage account and cosmos db account in the created Azure function
         <tbody>
         <tr align="left" valign="top">
             <th> AzureMetadataStorageContainer </th>
-            <td> <code>configStorageContainer</code> </td>
+            <td> <code>metadata</code> </td>
             <td> Container Name where the config files are copied. </td>
         </tr>
         <tr align="left" valign="top">
             <th> AzureMetadataStorageConnectionString </th>
-            <td> <code>configStorageConnectionString </code> </td>
+            <td> <code>DefaultEndpointsProtocol=https;AccountName=...</code> </td>
             <td> Connection String used to connect to Storage account containing config files</td>
         </tr>
         <tr align="left" valign="top">
             <th> AzureDataStorageConnectionString </th>
-            <td> <code>dataStorageConnectionString </code></td>
+            <td> <code>DefaultEndpointsProtocol=https;AccountName=... </code></td>
             <td> Connection String used to connect to Storage account that receives input data</td>
         </tr>        
         <tr align="left" valign="top">
             <th> AzureCosmosDBConnectionString </th>
-            <td> <code>cosmosDBConnectionString </code> </td>
+            <td> <code>DefaultEndpointsProtocol=https;AccountName=... </code> </td>
             <td> Connection String used to connect to Cosmos DB to load the data</td>
         </tr>
         <tr align="left" valign="top">
             <th> COSMOS_DB_ENDPOINT </th>
-            <td> <code>cosmosDBEndPoint </code> </td>
-            <td> CosmosDB end point used to connect to Cosmos DB to load the data</td>
+            <td> <code>https://datastreamsdk...</code> </td>
+            <td> CosmosDB URI used to connect to Cosmos DB to load the data</td>
         </tr>
         <tr align="left" valign="top">
             <th> COSMOS_DB_PRIMARY_KEY </th>
-            <td> <code>cosmosDBPrimaryKey </code> </td>
+            <td> <code>... </code> </td>
             <td> CosmosDB primaryKey used to connect to Cosmos DB to load the data</td>
         </tr>
         <tr align="left" valign="top">
             <th> COSMOS_DATABASE_NAME </th>
-            <td> <code>cosmosDBName </code> </td>
+            <td> <code>datastreamSdkDb</code> </td>
             <td> CosmosDB name used to connect to Cosmos DB to load the data</td>
         </tr>
         <tr align="left" valign="top">
             <th> COSMOS_CONTAINER_NAME </th>
-            <td> <code>cosmosSecondContainerName </code> </td>
+            <td> <code>uniqueVisitorContainer</code> </td>
             <td> cosmosSecondContainerName This container will store tha data that will be used for calculation of unique visitor</td>
         </tr>
         </tbody>
