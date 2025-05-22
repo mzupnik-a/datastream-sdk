@@ -59,17 +59,17 @@ class AzureFunctionAggregator:
         return new_data
 
 
-def main(input_stream: azure.functions.InputStream,
-         result_doc: azure.functions.Out[azure.functions.DocumentList]) -> None:
+def main(data: azure.functions.InputStream,
+         resultdoc: azure.functions.Out[azure.functions.DocumentList]) -> None:
     logger.info(
         f"Python blob trigger function processing blob \n"
-        f"Name: {input_stream.name}\n"
-        f"Blob Size: {input_stream.length} bytes"
+        f"Name: {data.name}\n"
+        f"Blob Size: {data.length} bytes"
     )
 
     # Transform the input stream
-    transformer: AzureFunctionAggregator = AzureFunctionAggregator(input_stream)
+    transformer: AzureFunctionAggregator = AzureFunctionAggregator(data)
     result: List[Any] = transformer.process()
 
-    # Write to Cosmos DB using result_doc
-    result_doc.set(azure.functions.DocumentList(result))
+    # Write to Cosmos DB using resultdoc
+    resultdoc.set(azure.functions.DocumentList(result))

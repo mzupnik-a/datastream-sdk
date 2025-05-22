@@ -10,9 +10,9 @@
             "connection": "AzureDataStorageConnectionString"
         },
         {
+            "name": "resultdoc",
             "type": "cosmosDB",
             "direction": "out",
-            "name": "resultdoc",
             "databaseName": "AzureCosmosDBName",
             "collectionName": "AzureCosmosDBContainerName",
             "createIfNotExists": "true",
