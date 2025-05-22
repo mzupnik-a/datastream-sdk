@@ -107,3 +107,11 @@ class UniqueVisitorCalculator:
         logger.info(f"logline date list :: {date_list}")
 
         return date_list
+
+
+def main(req: HttpRequest) -> HttpResponse:
+    """
+    Main function to handle the HTTP request and return unique visitor count.
+    """
+    calculator = UniqueVisitorCalculator(req)
+    return calculator.process()

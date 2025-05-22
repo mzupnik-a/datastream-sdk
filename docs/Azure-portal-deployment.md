@@ -25,25 +25,7 @@ This document outlines the steps to configure and deploy Python Azure functions 
 ## Prerequisite
 <p align="left"><a href="#top">Back to Top</a></p>
 
-1. Git Clone the repo
-
-    ```bash
-    git clone <repo url>
-    ```
-
-2. cd to the repo directory
-
-    ```
-    cd datastream-sdk
-    ```
-
-3. Create a branch and make changes in the branch
-
-    ```bash
-    git checkout -b <branch-name>
-    ```
-
-4. Follow this document to create the configuration files customised for your stream, 
+1. Follow this document to create the configuration files customised for your stream, 
 [Config files Setup Reference](config-setup.md)
 
 ## Create supporting Azure resources for your function
@@ -207,7 +189,7 @@ Create **Function App** (e.g., `datastreamSdkFunctionApp`) in the created Resour
     </table>                                                
 
 
-## Create an Azure Cosmos Core (SQL) API serverless account, database and container
+## Create an Azure Cosmos DB API account, database and container
 
 ### Create cosmos DB account
 <p align="left"><a href="#top">Back to Top</a></p>
@@ -371,66 +353,9 @@ Bind Storage account and cosmos db account in the created Azure function
 <p align="left"><a href="#top">Back to Top</a></p>
 
 The function app can be configured to fork the repo from a Github account.
-Before configuring ensure that the `host.json` and `cloud_modules_azure/function.json` file are updated accordingly and added to your branch in the repo.  
+Before configuring ensure that the `host.json` and `cloud_modules_azure/function.json` file are updated accordingly and added to your branch in the repo.
 
-1. Fork the repo to your local, create a branch and publish it with the following changes.
-    - Add or Update `host.json` file with the following details in the root directory, 
-
-        ```bash
-        cat << EOF > host.json
-        {
-            "version": "2.0",
-            "logging": {
-                "applicationInsights": {
-                    "samplingSettings": {
-                        "isEnabled": true,
-                        "excludedTypes": "Request"
-                    }
-                }
-            },
-            "extensionBundle": {
-                "id": "Microsoft.Azure.Functions.ExtensionBundle",
-                "version": "[2.*, 3.0.0)"
-            }
-        }
-        EOF
-        ```
-
-    - Add or Update `cloud_modules_azure/function.json` file with the following content,
-
-        - Ensure to replace the following variables with their respective values. 
-            - `$dataStorageContainer`
-            - `$databaseName`
-            - `$cosmosContainerName`
-
-        ```bash
-        cat << EOF > cloud_modules_azure/function.json
-        {
-            "scriptFile": "__init__.py",
-            "entryPoint": "main",
-            "bindings": [
-                {
-                    "name": "myblob",
-                    "type": "blobTrigger",
-                    "direction": "in",
-                    "path": "$dataStorageContainer/{name}",
-                    "connection": "AzureDataStorageConnectionString"
-                },
-                {
-                    "type": "cosmosDB",
-                    "direction": "out",
-                    "name": "resultdoc",
-                    "databaseName": "$databaseName",
-                    "collectionName": "$cosmosContainerName",
-                    "createIfNotExists": "true",
-                    "connectionStringSetting": "AzureCosmosDBConnectionString"
-                }
-            ]
-        }
-        EOF
-        ```
-
-3. Navigate to Function App
+1. Navigate to Function App
 
     - Go to Deployment.
     - select 'Deployment Center'.

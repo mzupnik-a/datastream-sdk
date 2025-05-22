@@ -1,5 +1,5 @@
 {
-    "scriptFile": "calculatory.py",
+    "scriptFile": "calculator.py",
     "entryPoint": "main",
     "bindings": [
         {
