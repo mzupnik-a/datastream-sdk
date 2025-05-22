@@ -1,0 +1,22 @@
+{
+    "scriptFile": "aggregator.py",
+    "entryPoint": "main",
+    "bindings": [
+        {
+            "name": "data",
+            "type": "blobTrigger",
+            "direction": "in",
+            "path": "%AzureDataStorageContainer%/data",
+            "connection": "%AzureDataStorageConnectionString%"
+        },
+        {
+            "type": "cosmosDB",
+            "direction": "out",
+            "name": "resultdoc",
+            "databaseName": "%AzureCosmosDBName%",
+            "collectionName": "%AzureCosmosDBContainerName%",
+            "createIfNotExists": "true",
+            "connectionStringSetting": "%AzureCosmosDBConnectionString%"
+        }
+    ]
+}

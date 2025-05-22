@@ -330,42 +330,37 @@ Bind Storage account and cosmos db account in the created Azure function
         </thead>
         <tbody>
         <tr align="left" valign="top">
-            <th> AzureMetadataStorageContainer </th>
-            <td> <code>metadata</code> </td>
-            <td> Container Name where the config files are copied. </td>
-        </tr>
-        <tr align="left" valign="top">
             <th> AzureMetadataStorageConnectionString </th>
             <td> <code>DefaultEndpointsProtocol=https;AccountName=...</code> </td>
             <td> Connection String used to connect to Storage account containing config files</td>
         </tr>
         <tr align="left" valign="top">
+            <th> AzureMetadataStorageContainer </th>
+            <td> <code>metadata</code> </td>
+            <td> Container Name where the config files are copied. </td>
+        </tr>
+        <tr align="left" valign="top">
             <th> AzureDataStorageConnectionString </th>
             <td> <code>DefaultEndpointsProtocol=https;AccountName=... </code></td>
             <td> Connection String used to connect to Storage account that receives input data</td>
-        </tr>        
+        </tr>
+        <tr align="left" valign="top">
+            <th> AzureDataStorageContainer </th>
+            <td> <code>data</code> </td>
+            <td> Container Name where the data files are stored. </td>
+        </tr>
         <tr align="left" valign="top">
             <th> AzureCosmosDBConnectionString </th>
             <td> <code>DefaultEndpointsProtocol=https;AccountName=... </code> </td>
             <td> Connection String used to connect to Cosmos DB to load the data</td>
         </tr>
         <tr align="left" valign="top">
-            <th> COSMOS_DB_ENDPOINT </th>
-            <td> <code>https://datastreamsdk...</code> </td>
-            <td> CosmosDB URI used to connect to Cosmos DB to load the data</td>
-        </tr>
-        <tr align="left" valign="top">
-            <th> COSMOS_DB_PRIMARY_KEY </th>
-            <td> <code>... </code> </td>
-            <td> CosmosDB primaryKey used to connect to Cosmos DB to load the data</td>
-        </tr>
-        <tr align="left" valign="top">
-            <th> COSMOS_DATABASE_NAME </th>
+            <th>AzureCosmosDBName</th>
             <td> <code>datastreamSdkDb</code> </td>
             <td> CosmosDB name used to connect to Cosmos DB to load the data</td>
         </tr>
         <tr align="left" valign="top">
-            <th> COSMOS_CONTAINER_NAME </th>
+            <th>AzureCosmosDBContainerName</th>
             <td> <code>uniqueVisitorContainer</code> </td>
             <td> cosmosSecondContainerName This container will store tha data that will be used for calculation of unique visitor</td>
         </tr>
