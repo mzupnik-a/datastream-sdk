@@ -6,17 +6,17 @@
             "name": "data",
             "type": "blobTrigger",
             "direction": "in",
-            "path": "%AzureDataStorageContainer%/data",
-            "connection": "%AzureDataStorageConnectionString%"
+            "path": "AzureDataStorageContainer/{name}",
+            "connection": "AzureDataStorageConnectionString"
         },
         {
             "type": "cosmosDB",
             "direction": "out",
             "name": "resultdoc",
-            "databaseName": "%AzureCosmosDBName%",
-            "collectionName": "%AzureCosmosDBContainerName%",
+            "databaseName": "AzureCosmosDBName",
+            "collectionName": "AzureCosmosDBContainerName",
             "createIfNotExists": "true",
-            "connectionStringSetting": "%AzureCosmosDBConnectionString%"
+            "connectionStringSetting": "AzureCosmosDBConnectionString"
         }
     ]
 }
