@@ -6,7 +6,7 @@
             "name": "data",
             "type": "blobTrigger",
             "direction": "in",
-            "path": "AzureDataStorageContainer/{name}",
+            "path": "data/{name}",
             "connection": "AzureDataStorageConnectionString"
         },
         {
