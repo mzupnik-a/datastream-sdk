@@ -343,7 +343,7 @@ Bind Storage account and cosmos db account in the created Azure function
         </tr>
         <tr align="left" valign="top">
             <th>AzureCosmosDBContainerName</th>
-            <td> <code>uniqueVisitorContainer</code> </td>
+            <td> <code>mainContainer</code> </td>
             <td> cosmosSecondContainerName This container will store tha data that will be used for calculation of unique visitor</td>
         </tr>
         </tbody>
