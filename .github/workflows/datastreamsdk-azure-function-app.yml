@@ -31,14 +31,17 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
 
+      - name: Set timestamp
+        id: timestamp
+        run: echo "now=$(date +%Y%m%d_%H%M%S)" >> $GITHUB_OUTPUT
 
       - name: Zip artifact for deployment
-        run: zip datastreamsdk.zip ./* -r
+        run: zip datastreamsdk_${{ steps.timestamp.outputs.now }}.zip ./* -r
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: python-app
+          name: datastreamsdk_${{ steps.timestamp.outputs.now }}
           path: |
-            datastreamsdk.zip
+            datastreamsdk_${{ steps.timestamp.outputs.now }}.zip
             !venv/
