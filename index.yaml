@@ -1,0 +1,12 @@
+apiVersion: v1
+entries:
+  datastream-sdk:
+  - apiVersion: v2
+    created: "2025-06-24T10:52:14.398102859Z"
+    description: Datastream SDK
+    digest: ad40a18061dab14a6f3062282d89f3009211a48e6bc349138dcfee3855a2f77c
+    name: datastream-sdk
+    urls:
+    - https://github.com/mzupnik-a/datastream-sdk/releases/download/helm-charts/datastream-sdk-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-06-24T10:52:14.397808418Z"
