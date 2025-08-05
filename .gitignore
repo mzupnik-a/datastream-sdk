@@ -9,4 +9,5 @@ local.settings.json
 ds_code-base.zip
 
 .terraform*
+terraform.tfstate*
 .env

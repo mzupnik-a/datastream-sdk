@@ -39,6 +39,10 @@ provider "helm" {
   }
 }
 
+resource "random_password" "password" {
+  length = 20
+}
+
 resource "kubernetes_namespace" "tenant" {
   metadata {
     name = data.terraform_remote_state.infra.outputs.tenant_id
@@ -97,14 +101,30 @@ resource "kubernetes_secret" "configuration_storage" {
   }
 }
 
+resource "kubernetes_secret" "db_secret" {
+  metadata {
+    name      = "db-secret"
+    namespace = data.terraform_remote_state.infra.outputs.tenant_id
+  }
+  data = {
+    host                     = data.terraform_remote_state.infra.outputs.postgresql_instance.host
+    port                     = data.terraform_remote_state.infra.outputs.postgresql_instance.port
+    root_user                = data.terraform_remote_state.infra.outputs.postgresql_instance.root_user
+    root_password            = data.terraform_remote_state.infra.outputs.postgresql_instance.root_password
+    config_user_password     = random_password.password.result
+    file_queue_user_password = random_password.password.result
+    db_name                  = "datastream_sdk_db"
+  }
+}
+
 resource "helm_release" "datastream_sdk" {
   depends_on = [
     kubernetes_namespace.tenant, kubernetes_secret.data_input_storage, kubernetes_secret.data_output_storage,
     kubernetes_secret.monitor_storage, kubernetes_secret.configuration_storage
   ]
-  name      = "datastream-sdk"
-  chart     = "https://mzupnik-a.github.io/datastream-sdk/datastream-sdk-0.1.0.tgz"
+  name                = "datastream-sdk"
+  chart               = "https://mzupnik-a.github.io/datastream-sdk/datastream-sdk-0.2.0.tgz"
   repository_username = var.github_username
   repository_password = var.github_token
-  namespace = data.terraform_remote_state.infra.outputs.tenant_id
+  namespace           = data.terraform_remote_state.infra.outputs.tenant_id
 }
