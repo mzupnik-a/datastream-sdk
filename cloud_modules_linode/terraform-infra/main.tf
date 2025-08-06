@@ -27,82 +27,52 @@ provider "linode" {
   token = var.linode_api_token
 }
 
-# resource "linode_object_storage_bucket" "data_input_storage" {
-#   label  = "data-input-storage-${var.tenant_id}"
-#   region = var.input_storage_region
-# }
-#
-# resource "linode_object_storage_key" "data_input_storage_key" {
-#   depends_on = [linode_object_storage_bucket.data_input_storage]
-#   label = "data-input-storage-key-${var.tenant_id}"
-#   bucket_access {
-#     region      = linode_object_storage_bucket.data_input_storage.region
-#     bucket_name = linode_object_storage_bucket.data_input_storage.label
-#     permissions = "read_write"
-#   }
-# }
-#
-# resource "linode_object_storage_bucket" "data_output_storage" {
-#   label  = "data-output-storage-${var.tenant_id}"
-#   region = var.output_storage_region
-# }
-#
-# resource "linode_object_storage_key" "data_output_storage_key" {
-#   depends_on = [linode_object_storage_bucket.data_output_storage]
-#   label = "data-output-storage-key-${var.tenant_id}"
-#   bucket_access {
-#     region      = linode_object_storage_bucket.data_output_storage.region
-#     bucket_name = linode_object_storage_bucket.data_output_storage.label
-#     permissions = "read_write"
-#   }
-# }
-#
-# resource "linode_object_storage_bucket" "monitor_storage" {
-#   label  = "monitor-storage-${var.tenant_id}"
-#   region = var.monitor_storage_region
-# }
-#
-# resource "linode_object_storage_key" "monitor_storage_key" {
-#   depends_on = [linode_object_storage_bucket.monitor_storage]
-#   label = "monitor-storage-key-${var.tenant_id}"
-#   bucket_access {
-#     region      = linode_object_storage_bucket.monitor_storage.region
-#     bucket_name = linode_object_storage_bucket.monitor_storage.label
-#     permissions = "read_write"
-#   }
-# }
-#
-# resource "linode_object_storage_bucket" "configuration_storage" {
-#   label  = "configuration-storage-${var.tenant_id}"
-#   region = var.config_storage_region
-# }
-#
-# resource "linode_object_storage_key" "configuration_storage_key" {
-#   depends_on = [linode_object_storage_bucket.configuration_storage]
-#   label = "configuration-storage-key-${var.tenant_id}"
-#   bucket_access {
-#     region      = linode_object_storage_bucket.configuration_storage.region
-#     bucket_name = linode_object_storage_bucket.configuration_storage.label
-#     permissions = "read_write"
-#   }
-# }
+resource "linode_object_storage_bucket" "input_data_storage" {
+  label  = "input-data-storage-${var.tenant_id}"
+  region = var.region
+}
 
-# resource "linode_lke_cluster" "datastream_lke_cluster" {
-#   label       = "datastream-lke-cluster-${var.tenant_id}"
-#   region      = var.lke_cluster_region
-#   k8s_version = "1.33"
-#
-#   pool {
-#     type  = "g6-nanode-1"
-#     count = 3
-#   }
-# }
-#
-# resource "local_file" "kubeconfig" {
-#   depends_on = [linode_lke_cluster.datastream_lke_cluster]
-#   filename = "${path.module}/kubeconfig-${var.tenant_id}.yaml"
-#   content = base64decode(linode_lke_cluster.datastream_lke_cluster.kubeconfig)
-# }
+resource "linode_object_storage_key" "input_data_storage_key" {
+  depends_on = [linode_object_storage_bucket.input_data_storage]
+  label = "input-data-storage-key-${var.tenant_id}"
+  bucket_access {
+    region      = linode_object_storage_bucket.input_data_storage.region
+    bucket_name = linode_object_storage_bucket.input_data_storage.label
+    permissions = "read_write"
+  }
+}
+
+resource "linode_object_storage_bucket" "internal_result_storage" {
+  label  = "internal-result-storage-${var.tenant_id}"
+  region = var.region
+}
+
+resource "linode_object_storage_key" "internal_result_storage_key" {
+  depends_on = [linode_object_storage_bucket.internal_result_storage]
+  label = "internal-result-storage-key-${var.tenant_id}"
+  bucket_access {
+    region      = linode_object_storage_bucket.internal_result_storage.region
+    bucket_name = linode_object_storage_bucket.internal_result_storage.label
+    permissions = "read_write"
+  }
+}
+
+resource "linode_lke_cluster" "datastream_lke_cluster" {
+  label       = "datastream-lke-cluster-${var.tenant_id}"
+  region      = var.region
+  k8s_version = "1.33"
+
+  pool {
+    type  = "g6-nanode-1"
+    count = 3
+  }
+}
+
+resource "local_file" "kubeconfig" {
+  depends_on = [linode_lke_cluster.datastream_lke_cluster]
+  filename = "${path.module}/kubeconfig-${var.tenant_id}.yaml"
+  content = base64decode(linode_lke_cluster.datastream_lke_cluster.kubeconfig)
+}
 
 resource "linode_vpc" "datastream_vpc" {
   label  = "datastream-vpc-${var.tenant_id}"
@@ -117,6 +87,8 @@ resource "linode_vpc_subnet" "datastream_subnet" {
 }
 
 resource "linode_database_postgresql_v2" "postgresql_instance" {
+  depends_on = [
+  ]
   label     = "datastream-postgresql-${var.tenant_id}"
   engine_id = "postgresql/14"
   region    = var.region
@@ -124,59 +96,29 @@ resource "linode_database_postgresql_v2" "postgresql_instance" {
   allow_list = [linode_vpc_subnet.datastream_subnet.ipv4]
 }
 
-# resource "random_password" "file_queue_user_password" {
-#   length  = 16
-#   special = true
-# }
-#
-# resource "random_password" "config_user_password" {
-#   length  = 16
-#   special = true
-# }
-
 output "tenant_id" {
   value = var.tenant_id
 }
 
-# output "data_input_storage_secret" {
-#   value = {
-#     storage_name = linode_object_storage_bucket.data_input_storage.label
-#     region       = linode_object_storage_bucket.data_input_storage.region
-#     access_key   = linode_object_storage_key.data_input_storage_key.access_key
-#     secret_key   = linode_object_storage_key.data_input_storage_key.secret_key
-#   }
-#   sensitive = true
-# }
-#
-# output "data_output_storage_secret" {
-#   value = {
-#     storage_name = linode_object_storage_bucket.data_output_storage.label
-#     region       = linode_object_storage_bucket.data_output_storage.region
-#     access_key   = linode_object_storage_key.data_output_storage_key.access_key
-#     secret_key   = linode_object_storage_key.data_output_storage_key.secret_key
-#   }
-#   sensitive = true
-# }
-#
-# output "monitor_storage_secret" {
-#   value = {
-#     storage_name = linode_object_storage_bucket.monitor_storage.label
-#     region       = linode_object_storage_bucket.monitor_storage.region
-#     access_key   = linode_object_storage_key.monitor_storage_key.access_key
-#     secret_key   = linode_object_storage_key.monitor_storage_key.secret_key
-#   }
-#   sensitive = true
-# }
-#
-# output "configuration_storage_secret" {
-#   value = {
-#     storage_name = linode_object_storage_bucket.configuration_storage.label
-#     region       = linode_object_storage_bucket.configuration_storage.region
-#     access_key   = linode_object_storage_key.configuration_storage_key.access_key
-#     secret_key   = linode_object_storage_key.configuration_storage_key.secret_key
-#   }
-#   sensitive = true
-# }
+output "input_data_storage_secret" {
+  value = {
+    storage_name = linode_object_storage_bucket.input_data_storage.label
+    region       = linode_object_storage_bucket.input_data_storage.region
+    access_key   = linode_object_storage_key.input_data_storage_key.access_key
+    secret_key   = linode_object_storage_key.input_data_storage_key.secret_key
+  }
+  sensitive = true
+}
+
+output "internal_result_storage_secret" {
+  value = {
+    storage_name = linode_object_storage_bucket.internal_result_storage.label
+    region       = linode_object_storage_bucket.internal_result_storage.region
+    access_key   = linode_object_storage_key.internal_result_storage_key.access_key
+    secret_key   = linode_object_storage_key.internal_result_storage_key.secret_key
+  }
+  sensitive = true
+}
 
 output "postgresql_instance" {
   value = {
@@ -184,14 +126,6 @@ output "postgresql_instance" {
     port          = linode_database_postgresql_v2.postgresql_instance.port
     root_user     = linode_database_postgresql_v2.postgresql_instance.root_username
     root_password = linode_database_postgresql_v2.postgresql_instance.root_password
-    # file_queue_user = {
-    #   username = "file_queue_user"
-    #   password = random_password.file_queue_user_password.result
-    # }
-    # config_user = {
-    #   username = "config_user"
-    #   password = random_password.config_user_password.result
-    # }
   }
   sensitive = true
 }

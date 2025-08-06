@@ -1,5 +1,0 @@
-aggregationService:
-  image: ghcr.io/mzupnik-a/datastream-sdk/aggregation-service:latest
-
-postgresqlSchema:
-  image: postgres:14
